@@ -4,21 +4,22 @@ import bcrypt from 'bcrypt';
 interface UserData {
     id?: string;
     username: string;
-    hashed_password: string;
+    password: string;
     email: string;
     date_joined?: Date;
  
 }
 
 export const registerUser = async (userData: UserData) => {
-    const hashedPassword = await bcrypt.hash(userData.hashed_password, 10);
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
     return await UserModel.create({ ...userData, hashed_password: hashedPassword });
 };
 
 export const loginUser = async (email: string, password: string) => {
     const user = await UserModel.findOne({ where: { email } });
     if (!user) return null;
-
+    console.log('Password:', password);
+    console.log('Hashed password:', user.hashed_password);
     const isPasswordMatch = await bcrypt.compare(password, user.hashed_password);
     if (!isPasswordMatch) return null;
 

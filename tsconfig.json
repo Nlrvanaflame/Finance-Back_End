@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": [ "node"],
+    "types": [ "node","jest"],
     "target": "ES6",
     "module": "commonjs",
     "strict": true,
@@ -15,7 +15,8 @@
     "src/**/*",
     "app.ts",
     "server.ts",
-    "types/express.d.ts"
+    "types/express.d.ts",
+    "tests/**/*",
    ],
   "exclude": [
     "node_modules"

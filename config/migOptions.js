@@ -9,9 +9,10 @@ module.exports = {
   test: {
     username: "postgres",
     password: "sword666",
-    database: "finannce",
+    database: "test",
     host: "127.0.0.1",
     dialect: "postgres",
+    logging: false
   },
   production: {
     username: "postgres",

@@ -7,6 +7,7 @@ import {
   BelongsTo 
 } from 'sequelize-typescript';
 import UserModel from './UserModel';
+import { Sequelize } from 'sequelize';
 
 @Table({ timestamps: true })
 export class FinancialRecord extends Model {
@@ -30,7 +31,7 @@ export class FinancialRecord extends Model {
   @Column({ type: DataType.STRING, allowNull: false })
   description: string;
 
-  @Column({ type: DataType.DATE, allowNull: false })
+  @Column({ type: DataType.DATE, allowNull: false, defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')  })
   record_date: Date;
 
   @BelongsTo(() => UserModel)
