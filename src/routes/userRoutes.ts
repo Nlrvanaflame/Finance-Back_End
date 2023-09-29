@@ -8,5 +8,6 @@ router.post('/register', userController.register);
 router.post('/login', userController.login);
 router.get('/logout', userController.logout);
 router.put('/users',authenticateJWT, userController.updateUserDetails);
+router.get('/usersdata/',userController.getUser)
 
 export default router;

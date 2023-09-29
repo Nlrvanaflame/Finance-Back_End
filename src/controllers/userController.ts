@@ -44,6 +44,37 @@ export const logout = async (req: Request, res: Response) => {
     res.send({ message: "User logged out successfully" });
 };
 
+export const getUser = async (req: Request, res: Response) => {
+  try {
+      // Extract token from Authorization header
+      const authHeader = req.headers.authorization;
+
+      if (!authHeader) {
+          return res.status(401).json({ message: 'Authorization header is required' });
+      }
+
+      const token = authHeader.split(' ')[1];  // Assuming Bearer token is used
+
+      if (!token) {
+          return res.status(401).json({ message: 'Token is required' });
+      }
+
+      // Fetch user from the token
+      const user = await userService.getUserFromToken(token);
+
+      // Send back the user data
+      return res.status(200).json(user);
+  } catch (error) {
+      if (error instanceof Error) {
+          return res.status(400).json({ message: error.message });
+      }
+
+      return res.status(500).json({ message: 'An unexpected error occurred' });
+  }
+};
+
+
+
 export const updateUserDetails = async (req: Request, res: Response) => {
   try {
     const updated = await userService.updateUser(req.body.id, req.body);
