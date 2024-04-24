@@ -77,10 +77,28 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const updateUserDetails = async (req: Request, res: Response) => {
   try {
-    const updated = await userService.updateUser(req.body.id, req.body);
-    if (updated) res.json(updated);
-    else res.status(404).send('User not found');
-  } catch(error) {
-    res.status(500).json({message: 'An error has occurred', error: (error as Error).message});
+    if (!req.user) {
+      return res.status(401).json({ message: 'User is not authenticated' });
+    }
+
+    console.log('Updated Data:', req.body);  // Log the received data
+
+    const { email, password } = req.body;
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Both email and password are required to update the user' });
+    }
+
+    const userId = req.user.id;
+    const updated = await userService.updateUser(userId, email, password);
+    if (updated) return res.json(updated);
+    else return res.status(404).send('User not found');
+  } catch (error: unknown) {
+    console.error('Update User Error:', error);
+    let message = 'An error has occurred';
+    if (error instanceof Error) {
+      message = error.message;
+    }
+    return res.status(500).json({ message, error: message });
   }
 };
+

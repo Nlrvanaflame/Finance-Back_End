@@ -10,10 +10,15 @@ interface UserData {
     date_joined?: Date;
  
 }
+interface updateUser{
+    email?: string,
+    password?:string
+}
 
 export const registerUser = async (userData: UserData) => {
+    const  {username,email} = userData
     const hashedPassword = await bcrypt.hash(userData.password, 10);
-    return await UserModel.create({ ...userData, hashed_password: hashedPassword });
+    return await UserModel.create({ username,email, hashed_password: hashedPassword });
 };
 
 export const loginUser = async (email: string, password: string) => {
@@ -29,18 +34,14 @@ export const loginUser = async (email: string, password: string) => {
 
 export const getUserFromToken = async (token: string) => {
     try {
-        // Verify and decode the token
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'm06tenden0n06ten') as JwtPayload;
 
-        // Check if ID or username is in the token
         const userId = decoded.id;
         const username = decoded.username;
 
         if (!userId && !username) {
             throw new Error('Invalid token');
         }
-
-        // Fetch the user based on ID or username
         const user = await UserModel.findOne({ where: userId ? { id: userId } : { username } });
 
         if (!user) {
@@ -55,11 +56,13 @@ export const getUserFromToken = async (token: string) => {
 
 
 
-export const updateUser = async (id: string, updatedData: UserData) => {
+export const updateUser = async (id: string, email: string, password: string) => {
     const user = await UserModel.findByPk(id);
-    if (user) {
-        await user.update(updatedData);
-        return user;
+    if (!user) {
+        return null;
     }
-    return null;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await user.update({ email, hashed_password: hashedPassword });
+    return user;
 };
