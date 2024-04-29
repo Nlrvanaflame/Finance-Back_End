@@ -16,9 +16,9 @@ interface updateUser{
 }
 
 export const registerUser = async (userData: UserData) => {
-    const  {username,email} = userData
+    const  {username,email,date_joined} = userData
     const hashedPassword = await bcrypt.hash(userData.password, 10);
-    return await UserModel.create({ username,email, hashed_password: hashedPassword });
+    return await UserModel.create({ username,email, hashed_password: hashedPassword,date_joined });
 };
 
 export const loginUser = async (email: string, password: string) => {
